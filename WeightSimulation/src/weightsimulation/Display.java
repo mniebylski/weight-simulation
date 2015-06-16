@@ -17,7 +17,7 @@ import org.jfree.data.xy.XYDataset;
 public class Display {
 
 	public static void main(String[] args) {
-
+		System.out.println("Test");
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				javax.swing.JFrame frame = new JFrame("Charts");
@@ -25,7 +25,7 @@ public class Display {
 				frame.setSize(600, 400);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);
-				System.out.println("Test");
+				
 				XYDataset ds = createDataset();
 				JFreeChart chart = ChartFactory.createXYLineChart("Test Chart",
 						"x", "y", ds, PlotOrientation.VERTICAL, true, true,
