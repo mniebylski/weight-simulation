@@ -14,43 +14,39 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 
-/**
- *
- * @author mniebylski
- */
 public class Display {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                javax.swing.JFrame frame = new JFrame("Charts");
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				javax.swing.JFrame frame = new JFrame("Charts");
+				System.out.println();
+				frame.setSize(600, 400);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setVisible(true);
+				System.out.println("Test");
+				XYDataset ds = createDataset();
+				JFreeChart chart = ChartFactory.createXYLineChart("Test Chart",
+						"x", "y", ds, PlotOrientation.VERTICAL, true, true,
+						false);
 
-                frame.setSize(600, 400);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setVisible(true);
+				ChartPanel cp = new ChartPanel(chart);
 
-                XYDataset ds = createDataset();
-                JFreeChart chart = ChartFactory.createXYLineChart("Test Chart",
-                        "x", "y", ds, PlotOrientation.VERTICAL, true, true,
-                        false);
+				frame.getContentPane().add(cp);
+			}
+		});
 
-                ChartPanel cp = new ChartPanel(chart);
+	}
+	
+	private static XYDataset createDataset() {
 
-                frame.getContentPane().add(cp);
-            }
-        });
+		DefaultXYDataset ds = new DefaultXYDataset();
 
-    }
+		double[][] data = { { 0.1, 0.2, 0.3 }, { 1, 2, 3 } };
 
-    private static XYDataset createDataset() {
+		ds.addSeries("series1", data);
 
-        DefaultXYDataset ds = new DefaultXYDataset();
-
-        double[][] data = {{0.1, 0.2, 0.3}, {1, 2, 3}};
-
-        ds.addSeries("series1", data);
-
-        return ds;
-    }
+		return ds;
+	}
 }
