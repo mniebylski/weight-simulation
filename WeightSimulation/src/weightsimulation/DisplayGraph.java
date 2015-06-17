@@ -2,6 +2,7 @@ package weightsimulation;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Stroke;
 import java.text.SimpleDateFormat;
 
@@ -33,7 +34,6 @@ public class DisplayGraph {
 				// Set Frame Properties
 				frame.setSize(900, 800);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				
 
 				// Load Data Set
 				XYDataset ds = createDataset();
@@ -46,14 +46,24 @@ public class DisplayGraph {
 				// Create Horizontal Line (Target Weight)
 				ValueMarker marker = new ValueMarker(140);
 				marker.setPaint(new Color(0, 219, 29));
-				marker.setStroke(new BasicStroke(2.0F));
 
-				//marker.setLabel("Target Weight: "+140); // see JavaDoc for labels, colors,
-				// strokes
+				float[] dashed = new float[] { 10.0f, 10.0f };
+				BasicStroke stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE,
+						BasicStroke.JOIN_BEVEL, 10.0f, dashed, 10.0f);
+
+				marker.setStroke(stroke);
+
+				// marker.setLabel("Target Weight: "+140); // see JavaDoc for
+				// labels, colors,
 
 				// Create XYPlot Object
 				XYPlot plot = (XYPlot) chart.getPlot();
 				plot.addRangeMarker(marker);
+
+				// Background
+				plot.setBackgroundPaint(new GradientPaint(0, 0, new Color(81,
+						114, 153), 200, 200, new Color(125, 185, 232), false));
+				plot.setBackgroundImageAlpha(0.5f);
 
 				// Set Custom Range
 				ValueAxis yAxis = plot.getRangeAxis();
@@ -73,6 +83,12 @@ public class DisplayGraph {
 				rend.setPrecision(5); // Precision: the number of line segments
 										// between 2 points
 				plot.setRenderer(rend);
+				
+				plot.getRenderer().setSeriesStroke(
+						1,
+						new BasicStroke(2.0f, BasicStroke.CAP_ROUND,
+								BasicStroke.JOIN_ROUND, 1.0f, new float[] {
+										6.0f, 6.0f }, 0.0f));
 
 				// Create A Chart Panel
 				ChartPanel cp = new ChartPanel(chart);
