@@ -1,7 +1,9 @@
 package weightsimulation;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Stroke;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -11,6 +13,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.time.Day;
@@ -30,24 +33,33 @@ public class Display {
 				// Set Frame Properties
 				frame.setSize(800, 600);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setVisible(true);
+				
 
 				// Load Data Set
 				XYDataset ds = createDataset();
 
-				// Create an XY Time Seriers Chart
+				// Create an XY Time Series Chart
 				JFreeChart chart = ChartFactory.createTimeSeriesChart(
 						"Weight Over Time", "Date (mm/dd/yy)", "Weight (lbs)",
 						ds, false, false, false);
 
+				// Create Horizontal Line (Target Weight)
+				ValueMarker marker = new ValueMarker(140);
+				marker.setPaint(new Color(0, 219, 29));
+				marker.setStroke(new BasicStroke(2.0F));
+
+				// marker.setLabel("here"); // see JavaDoc for labels, colors,
+				// strokes
+
 				// Create XYPlot Object
 				XYPlot plot = (XYPlot) chart.getPlot();
+				plot.addRangeMarker(marker);
 
 				// Set Custom Range
 				ValueAxis yAxis = plot.getRangeAxis();
 				yAxis.setRange(135.0, 155.0);
 
-				// Set Custom Domain
+				// Set Domain
 				DateAxis xAxis = (DateAxis) plot.getDomainAxis();
 
 				// Domain Customization
@@ -67,6 +79,7 @@ public class Display {
 
 				// Add Chart to Frame
 				frame.getContentPane().add(cp);
+				frame.setVisible(true);
 			}
 		});
 
