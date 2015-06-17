@@ -27,10 +27,12 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
+import java.util.*;
+import java.io.*;
+
 public class DisplayGraph {
 
-	public static void main(String[] args) {
-
+	DisplayGraph(){
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				// Create Frame
@@ -115,7 +117,6 @@ public class DisplayGraph {
 				frame.setVisible(true);
 			}
 		});
-
 	}
 
 	// Generate Points For Graph
@@ -124,11 +125,29 @@ public class DisplayGraph {
 		TimeSeriesCollection ds = new TimeSeriesCollection();
 		TimeSeries data = new TimeSeries("Data Weigh-ins");
 		TimeSeries future = new TimeSeries("Future Predictions");
-
-		// Get Past Points
-		data.add(new Day(15, 6, 2015), 150);
-		data.add(new Day(16, 6, 2015), 149);
-		data.add(new Day(17, 6, 2015), 145);
+		File file = new File("data.txt");
+		Scanner sc = null;
+		try {
+			sc = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while (sc.hasNextLine()) {
+			String dateStr = sc.next();
+			int month = Integer.parseInt((dateStr.substring(0,
+					dateStr.indexOf("/"))));
+			dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
+					dateStr.length());
+			int day = Integer.parseInt((dateStr.substring(0,
+					dateStr.indexOf("/"))));
+			dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
+					dateStr.length());
+			int year = Integer.parseInt(dateStr);
+			Double weight = sc.nextDouble();
+			Day myDay = new Day(day, month, year);
+			data.add(myDay, weight);
+			System.out.println(myDay);
+		}
 
 		// Get Future Points
 		future.add(new Day(17, 6, 2015), 145);
@@ -142,7 +161,7 @@ public class DisplayGraph {
 		ds.addSeries(data);
 		ds.addSeries(future);
 
-		Date date = new Date((long) ds.getX(0, 0));
+		Date date = new Date((Long) ds.getX(0, 0));
 		DateFormat format = new SimpleDateFormat("dd");
 		format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 		String formatted = format.format(date);
