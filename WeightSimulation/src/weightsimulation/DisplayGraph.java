@@ -4,7 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Stroke;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -17,6 +20,7 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
@@ -66,11 +70,6 @@ public class DisplayGraph {
 						114, 153), 200, 200, new Color(125, 185, 232), false));
 				plot.setBackgroundImageAlpha(0.5f);
 
-				//Custom Colors TO DO
-				XYItemRenderer renderer = chart.getXYPlot().getRenderer();
-				renderer.setBaseOutlineStroke(new BasicStroke(10.0f));
-				                        
-				 
 				// Set Custom Range
 				ValueAxis yAxis = plot.getRangeAxis();
 				yAxis.setRange(135.0, 155.0);
@@ -83,18 +82,36 @@ public class DisplayGraph {
 						"MM/dd/yyyy"));
 				xAxis.setAutoTickUnitSelection(false);
 				xAxis.setVerticalTickLabels(true);
+				// Make Domain Smallest Past Val to Largest Future
+				xAxis.setRange(ds.getXValue(0, 0), ds.getXValue(1, 6));
 
 				// Make Graph Curved
-				final XYSplineRenderer rend = new XYSplineRenderer();
-				rend.setPrecision(5); // Precision: the number of line segments
-										// between 2 points
+				XYSplineRenderer rend = new XYSplineRenderer();
+				XYSplineRenderer rend1 = new XYSplineRenderer();
+
 				plot.setRenderer(rend);
+				rend.setPrecision(5);
+				rend1.setPrecision(5);
+
+				// Color Graph
+				plot.getRenderer(0).setSeriesStroke(0, new BasicStroke(2.0f));
+				plot.getRenderer(0).setSeriesPaint(0, Color.RED);
+
+				plot.getRenderer(0).setSeriesStroke(
+						1,
+						new BasicStroke(2, BasicStroke.CAP_SQUARE,
+								BasicStroke.JOIN_BEVEL, 2.0f, dashed, 2.0f));
+				plot.getRenderer(0).setSeriesPaint(1, Color.RED);
 
 				// Create A Chart Panel
-				ChartPanel cp = new ChartPanel(chart);
+				ChartPanel chartPane = new ChartPanel(chart);
+
+				// Disable Resizing
+				chartPane.setDomainZoomable(false);
+				chartPane.setRangeZoomable(false);
 
 				// Add Chart to Frame
-				frame.getContentPane().add(cp);
+				frame.getContentPane().add(chartPane);
 				frame.setVisible(true);
 			}
 		});
@@ -105,14 +122,30 @@ public class DisplayGraph {
 	private static XYDataset createDataset() {
 
 		TimeSeriesCollection ds = new TimeSeriesCollection();
-		TimeSeries data = new TimeSeries("Past Weigh-ins");
+		TimeSeries data = new TimeSeries("Data Weigh-ins");
+		TimeSeries future = new TimeSeries("Future Predictions");
 
+		// Get Past Points
 		data.add(new Day(15, 6, 2015), 150);
 		data.add(new Day(16, 6, 2015), 149);
 		data.add(new Day(17, 6, 2015), 145);
-		data.add(new Day(18, 6, 2015), 144);
+
+		// Get Future Points
+		future.add(new Day(17, 6, 2015), 145);
+		future.add(new Day(18, 6, 2015), 143.8);
+		future.add(new Day(19, 6, 2015), 142.7);
+		future.add(new Day(20, 6, 2015), 142.2);
+		future.add(new Day(21, 6, 2015), 141);
+		future.add(new Day(22, 6, 2015), 140);
+		future.add(new Day(23, 6, 2015), 139.6);
 
 		ds.addSeries(data);
+		ds.addSeries(future);
+
+		Date date = new Date((long) ds.getX(0, 0));
+		DateFormat format = new SimpleDateFormat("dd");
+		format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+		String formatted = format.format(date);
 
 		return ds;
 	}
