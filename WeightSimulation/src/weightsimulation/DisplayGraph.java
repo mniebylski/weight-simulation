@@ -16,6 +16,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
@@ -65,6 +66,11 @@ public class DisplayGraph {
 						114, 153), 200, 200, new Color(125, 185, 232), false));
 				plot.setBackgroundImageAlpha(0.5f);
 
+				//Custom Colors TO DO
+				XYItemRenderer renderer = chart.getXYPlot().getRenderer();
+				renderer.setBaseOutlineStroke(new BasicStroke(10.0f));
+				                        
+				 
 				// Set Custom Range
 				ValueAxis yAxis = plot.getRangeAxis();
 				yAxis.setRange(135.0, 155.0);
@@ -83,12 +89,6 @@ public class DisplayGraph {
 				rend.setPrecision(5); // Precision: the number of line segments
 										// between 2 points
 				plot.setRenderer(rend);
-				
-				plot.getRenderer().setSeriesStroke(
-						1,
-						new BasicStroke(2.0f, BasicStroke.CAP_ROUND,
-								BasicStroke.JOIN_ROUND, 1.0f, new float[] {
-										6.0f, 6.0f }, 0.0f));
 
 				// Create A Chart Panel
 				ChartPanel cp = new ChartPanel(chart);
