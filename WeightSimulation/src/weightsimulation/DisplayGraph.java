@@ -31,7 +31,7 @@ public class DisplayGraph {
 				javax.swing.JFrame frame = new JFrame("Weight Simulation");
 
 				// Set Frame Properties
-				frame.setSize(800, 600);
+				frame.setSize(900, 800);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				
 
