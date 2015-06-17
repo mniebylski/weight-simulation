@@ -21,7 +21,7 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
-public class Display {
+public class DisplayGraph {
 
 	public static void main(String[] args) {
 
@@ -48,7 +48,7 @@ public class Display {
 				marker.setPaint(new Color(0, 219, 29));
 				marker.setStroke(new BasicStroke(2.0F));
 
-				// marker.setLabel("here"); // see JavaDoc for labels, colors,
+				//marker.setLabel("Target Weight: "+140); // see JavaDoc for labels, colors,
 				// strokes
 
 				// Create XYPlot Object
