@@ -59,7 +59,7 @@ public class PatientHub extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Show input
-				PatientInput pIn = new PatientInput(null);
+				PatientInput pIn = new PatientInput();
 				pIn.setVisible(true);
 				//Hide Current
 				JButton button = (JButton)e.getSource();

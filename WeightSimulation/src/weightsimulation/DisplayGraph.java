@@ -32,7 +32,7 @@ import java.io.*;
 
 public class DisplayGraph {
 
-	DisplayGraph(){
+	DisplayGraph() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				// Create Frame
@@ -122,9 +122,12 @@ public class DisplayGraph {
 	// Generate Points For Graph
 	private static XYDataset createDataset() {
 
+		// Create data sets
 		TimeSeriesCollection ds = new TimeSeriesCollection();
 		TimeSeries data = new TimeSeries("Data Weigh-ins");
 		TimeSeries future = new TimeSeries("Future Predictions");
+
+		// Create scanner
 		File file = new File("data.txt");
 		Scanner sc = null;
 		try {
@@ -132,23 +135,27 @@ public class DisplayGraph {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		while (sc.hasNextLine()) {
-			String dateStr = sc.next();
-			int month = Integer.parseInt((dateStr.substring(0,
-					dateStr.indexOf("/"))));
-			dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
-					dateStr.length());
-			int day = Integer.parseInt((dateStr.substring(0,
-					dateStr.indexOf("/"))));
-			dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
-					dateStr.length());
-			int year = Integer.parseInt(dateStr);
-			Double weight = sc.nextDouble();
-			Day myDay = new Day(day, month, year);
-			data.add(myDay, weight);
-			System.out.println(myDay);
-		}
 
+		// Cycle through text
+		while (sc.hasNextLine()) {
+			if (sc.nextLine() != "") {
+				String dateStr = sc.next();
+				System.out.println("Next line: " + dateStr);
+				int month = Integer.parseInt((dateStr.substring(0,
+						dateStr.indexOf("/"))));
+				dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
+						dateStr.length());
+				int day = Integer.parseInt((dateStr.substring(0,
+						dateStr.indexOf("/"))));
+				dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
+						dateStr.length());
+				int year = Integer.parseInt(dateStr);
+				Double weight = sc.nextDouble();
+				Day myDay = new Day(day, month, year);
+				data.add(myDay, weight);
+				System.out.println(myDay);
+			}
+		}
 		// Get Future Points
 		future.add(new Day(17, 6, 2015), 145);
 		future.add(new Day(18, 6, 2015), 143.8);
