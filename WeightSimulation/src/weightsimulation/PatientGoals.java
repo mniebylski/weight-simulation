@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Font;
 
 public class PatientGoals extends JFrame {
 
@@ -35,8 +38,14 @@ public class PatientGoals extends JFrame {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblMyGoals = new JLabel("My Goals");
+		lblMyGoals.setFont(new Font("Lucida Grande", Font.PLAIN, 26));
+		lblMyGoals.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMyGoals.setBounds(154, 6, 120, 32);
+		contentPane.add(lblMyGoals);
 	}
 
 }

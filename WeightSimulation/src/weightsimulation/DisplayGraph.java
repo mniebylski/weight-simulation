@@ -1,9 +1,12 @@
+//Graphing data
+
 package weightsimulation;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Stroke;
+import java.awt.Window;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,6 +33,18 @@ import org.jfree.data.xy.XYDataset;
 import java.util.*;
 import java.io.*;
 
+import javax.swing.JPanel;
+
+import java.awt.BorderLayout;
+
+import javax.swing.JButton;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JLabel;
+
 public class DisplayGraph {
 
 	DisplayGraph() {
@@ -37,9 +52,10 @@ public class DisplayGraph {
 			public void run() {
 				// Create Frame
 				javax.swing.JFrame frame = new JFrame("Weight Simulation");
+				frame.setResizable(false);
 
 				// Set Frame Properties
-				frame.setSize(900, 800);
+				frame.setSize(722,719);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 				// Load Data Set
@@ -104,9 +120,11 @@ public class DisplayGraph {
 						new BasicStroke(2, BasicStroke.CAP_SQUARE,
 								BasicStroke.JOIN_BEVEL, 2.0f, dashed, 2.0f));
 				plot.getRenderer(0).setSeriesPaint(1, Color.RED);
+				frame.getContentPane().setLayout(null);
 
 				// Create A Chart Panel
 				ChartPanel chartPane = new ChartPanel(chart);
+				chartPane.setBounds(10, 0, 700, 593);
 
 				// Disable Resizing
 				chartPane.setDomainZoomable(false);
@@ -114,6 +132,53 @@ public class DisplayGraph {
 
 				// Add Chart to Frame
 				frame.getContentPane().add(chartPane);
+				chartPane.setLayout(null);
+				
+				JPanel panel = new JPanel();
+				panel.setBounds(0, 0, 10, 10);
+				frame.getContentPane().add(panel);
+				
+				//Buttons 
+				JButton btnNewButton = new JButton("Back");
+				btnNewButton.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+				btnNewButton.setBounds(16, 623, 88, 72);
+				frame.getContentPane().add(btnNewButton);
+				btnNewButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Show hub
+						PatientHub hub = new PatientHub();
+						hub.setVisible(true);
+						//Hide Current
+						JButton button = (JButton)e.getSource();
+					    Window window = SwingUtilities.windowForComponent(button);
+					    window.setVisible(false);
+					}
+				});
+				
+				JLabel lblDateRange = new JLabel("Date Range");
+				lblDateRange.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+				lblDateRange.setBounds(312, 593, 132, 43);
+				frame.getContentPane().add(lblDateRange);
+				
+				JButton btnNewButton_1 = new JButton("7 Days");
+				btnNewButton_1.setBounds(128, 635, 88, 51);
+				frame.getContentPane().add(btnNewButton_1);
+				
+				JButton btnWeeks = new JButton("3 Weeks");
+				btnWeeks.setBounds(231, 635, 88, 51);
+				frame.getContentPane().add(btnWeeks);
+				
+				JButton btnMonths = new JButton("6 Months");
+				btnMonths.setBounds(331, 635, 88, 51);
+				frame.getContentPane().add(btnMonths);
+				
+				JButton btnYear = new JButton("1 Year");
+				btnYear.setBounds(431, 635, 88, 51);
+				frame.getContentPane().add(btnYear);
+				
+				JButton btnCustom = new JButton("Custom");
+				btnCustom.setBounds(531, 635, 88, 51);
+				frame.getContentPane().add(btnCustom);
 				frame.setVisible(true);
 			}
 		});
@@ -139,21 +204,30 @@ public class DisplayGraph {
 		// Cycle through text
 		while (sc.hasNextLine()) {
 			if (sc.nextLine() != "") {
+				//Get Date String
 				String dateStr = sc.next();
-				System.out.println("Next line: " + dateStr);
+				
+				//Splice Month
 				int month = Integer.parseInt((dateStr.substring(0,
 						dateStr.indexOf("/"))));
+				
+				//Splice Day
 				dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
 						dateStr.length());
 				int day = Integer.parseInt((dateStr.substring(0,
 						dateStr.indexOf("/"))));
+				
+				//Splice Year
 				dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
 						dateStr.length());
 				int year = Integer.parseInt(dateStr);
+				
+				//Get Weight
 				Double weight = sc.nextDouble();
 				Day myDay = new Day(day, month, year);
+				
+				//Add Data Point
 				data.add(myDay, weight);
-				System.out.println(myDay);
 			}
 		}
 		// Get Future Points

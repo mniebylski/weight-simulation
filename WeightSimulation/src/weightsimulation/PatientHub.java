@@ -75,7 +75,12 @@ public class PatientHub extends JFrame {
 		btnGoals.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Show goals
-				
+				PatientGoals goal = new PatientGoals();
+				goal.setVisible(true);
+				//Hide Current
+				JButton button = (JButton)e.getSource();
+			    Window window = SwingUtilities.windowForComponent(button);
+			    window.setVisible(false);
 			}
 		});
 		contentPane.add(btnGoals);
@@ -102,7 +107,12 @@ public class PatientHub extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Show strats
-				
+				PatientStrategies str = new PatientStrategies();
+				str.setVisible(true);
+				//Hide Current
+				JButton button = (JButton)e.getSource();
+			    Window window = SwingUtilities.windowForComponent(button);
+			    window.setVisible(false);
 			}
 		});
 		contentPane.add(btnNewButton_1);

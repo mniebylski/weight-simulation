@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Window;
 import java.awt.event.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -123,17 +124,17 @@ public class PatientInput extends JFrame implements ActionListener {
 					}
 
 					try (PrintWriter out = new PrintWriter(new BufferedWriter(
-						// Append Text File
-						new FileWriter("data.txt", true)))) {
-						out.print("\n"+txtEnterMonth.getText()+"/"+txtEnterDay.getText()+"/"+txtEnterYear.getText()+" "+weight);
+					// Append Text File
+							new FileWriter("data.txt", true)))) {
+						out.print("\n" + txtEnterMonth.getText() + "/"
+								+ txtEnterDay.getText() + "/"
+								+ txtEnterYear.getText() + " " + weight);
 
 						// Success Dialog
 						JOptionPane.showMessageDialog(contentPane,
 								"Data Successfully Entered", "Success",
 								JOptionPane.DEFAULT_OPTION);
-						
-						
-						
+
 					} catch (IOException ex) {
 						// Throw Error
 						JOptionPane
@@ -143,7 +144,7 @@ public class PatientInput extends JFrame implements ActionListener {
 										"Error", JOptionPane.ERROR_MESSAGE);
 						ex.printStackTrace();
 					}
-					
+
 					// Clear Forms
 					txtEnterWeight.setText("");
 					txtEnterDay.setText("");
@@ -161,9 +162,27 @@ public class PatientInput extends JFrame implements ActionListener {
 		btnNewButton.setBounds(224, 286, 134, 47);
 		contentPane.add(btnNewButton);
 
+		// Enable Metric Mode
 		JCheckBox chckbxMetricUnits = new JCheckBox("Metric Units");
 		chckbxMetricUnits.setBounds(84, 296, 128, 23);
 		contentPane.add(chckbxMetricUnits);
+
+		// Back Button
+		JButton btnNewButton_1 = new JButton("Back");
+		btnNewButton_1.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+		btnNewButton_1.setBounds(363, 286, 81, 47);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Show hub
+				PatientHub hub = new PatientHub();
+				hub.setVisible(true);
+				// Hide Current
+				JButton button = (JButton) e.getSource();
+				Window window = SwingUtilities.windowForComponent(button);
+				window.setVisible(false);
+			}
+		});
+		contentPane.add(btnNewButton_1);
 
 		chckbxMetricUnits.addActionListener(new ActionListener() {
 
