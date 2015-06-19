@@ -61,10 +61,10 @@ public class PatientHub extends JFrame {
 				// Show input
 				PatientInput pIn = new PatientInput();
 				pIn.setVisible(true);
-				//Hide Current
-				JButton button = (JButton)e.getSource();
-			    Window window = SwingUtilities.windowForComponent(button);
-			    window.setVisible(false);
+				// Hide Current
+				JButton button = (JButton) e.getSource();
+				Window window = SwingUtilities.windowForComponent(button);
+				window.setVisible(false);
 			}
 		});
 		contentPane.add(btnNewButton);
@@ -77,10 +77,10 @@ public class PatientHub extends JFrame {
 				// Show goals
 				PatientGoals goal = new PatientGoals();
 				goal.setVisible(true);
-				//Hide Current
-				JButton button = (JButton)e.getSource();
-			    Window window = SwingUtilities.windowForComponent(button);
-			    window.setVisible(false);
+				// Hide Current
+				JButton button = (JButton) e.getSource();
+				Window window = SwingUtilities.windowForComponent(button);
+				window.setVisible(false);
 			}
 		});
 		contentPane.add(btnGoals);
@@ -92,11 +92,11 @@ public class PatientHub extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Show progress
 				DisplayGraph disp = new DisplayGraph();
-				
-				//Hide Current
-				JButton button = (JButton)e.getSource();
-			    Window window = SwingUtilities.windowForComponent(button);
-			    window.setVisible(false);
+
+				// Hide Current
+				JButton button = (JButton) e.getSource();
+				Window window = SwingUtilities.windowForComponent(button);
+				window.setVisible(false);
 			}
 		});
 		contentPane.add(btnProgressGraph);
@@ -109,10 +109,10 @@ public class PatientHub extends JFrame {
 				// Show strats
 				PatientStrategies str = new PatientStrategies();
 				str.setVisible(true);
-				//Hide Current
-				JButton button = (JButton)e.getSource();
-			    Window window = SwingUtilities.windowForComponent(button);
-			    window.setVisible(false);
+				// Hide Current
+				JButton button = (JButton) e.getSource();
+				Window window = SwingUtilities.windowForComponent(button);
+				window.setVisible(false);
 			}
 		});
 		contentPane.add(btnNewButton_1);

@@ -20,10 +20,13 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.JXTable;
 
 public class PatientGoals extends JFrame {
 
 	private JPanel contentPane;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -45,7 +48,7 @@ public class PatientGoals extends JFrame {
 	 * Create the frame.
 	 */
 	public PatientGoals() {
-		
+
 		// Create Frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -60,7 +63,7 @@ public class PatientGoals extends JFrame {
 		lblMyGoals.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMyGoals.setBounds(154, 6, 120, 32);
 		contentPane.add(lblMyGoals);
-		
+
 		// Back Button
 		JButton btnBack = new JButton("Back");
 		btnBack.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
@@ -75,11 +78,12 @@ public class PatientGoals extends JFrame {
 				window.setVisible(false);
 			}
 		});
-		btnBack.setBounds(6, 230, 92, 42);
+		btnBack.setBounds(24, 230, 92, 42);
 		contentPane.add(btnBack);
 
-		// Table
-		
+		table = new JTable();
+		table.setBounds(24, 50, 400, 168);
+		contentPane.add(table);
 
 	}
 }

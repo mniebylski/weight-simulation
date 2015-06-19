@@ -107,13 +107,7 @@ public class PatientInput extends JFrame implements ActionListener {
 		JButton btnNewButton = new JButton("Submit");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ((txtEnterWeight.getText().length() >= 2 && txtEnterWeight
-						.getText().length() < 7)
-						&& (txtEnterDay.getText().length() <= 2 && txtEnterDay
-								.getText().length() >= 1)
-						&& (txtEnterMonth.getText().length() <= 2 && txtEnterMonth
-								.getText().length() >= 1)
-						&& (txtEnterYear.getText().length() == 4)) {
+				if ((txtEnterWeight.getText().length() >= 2 && txtEnterWeight.getText().length() < 7) && (txtEnterDay.getText().length() <= 2 && txtEnterDay.getText().length() >= 1) && (txtEnterMonth.getText().length() <= 2 && txtEnterMonth.getText().length() >= 1) && (txtEnterYear.getText().length() == 4)) {
 					// Save Data
 
 					// Covert metric to imperial
@@ -126,22 +120,14 @@ public class PatientInput extends JFrame implements ActionListener {
 					try (PrintWriter out = new PrintWriter(new BufferedWriter(
 					// Append Text File
 							new FileWriter("data.txt", true)))) {
-						out.print("\n" + txtEnterMonth.getText() + "/"
-								+ txtEnterDay.getText() + "/"
-								+ txtEnterYear.getText() + " " + weight);
+						out.print("\n" + txtEnterMonth.getText() + "/" + txtEnterDay.getText() + "/" + txtEnterYear.getText() + " " + weight);
 
 						// Success Dialog
-						JOptionPane.showMessageDialog(contentPane,
-								"Data Successfully Entered", "Success",
-								JOptionPane.DEFAULT_OPTION);
+						JOptionPane.showMessageDialog(contentPane, "Data Successfully Entered", "Success", JOptionPane.DEFAULT_OPTION);
 
 					} catch (IOException ex) {
 						// Throw Error
-						JOptionPane
-								.showMessageDialog(
-										contentPane,
-										"Something went wrong. Please restart the program.",
-										"Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(contentPane, "Something went wrong. Please restart the program.", "Error", JOptionPane.ERROR_MESSAGE);
 						ex.printStackTrace();
 					}
 
@@ -153,9 +139,7 @@ public class PatientInput extends JFrame implements ActionListener {
 
 				} else {
 					// Throw Error
-					JOptionPane.showMessageDialog(contentPane,
-							"Please fill out all fields correctly.", "Error",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(contentPane, "Please fill out all fields correctly.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});

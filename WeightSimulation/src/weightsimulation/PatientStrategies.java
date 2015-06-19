@@ -63,10 +63,10 @@ public class PatientStrategies extends JFrame {
 				// Show hub
 				PatientHub hub = new PatientHub();
 				hub.setVisible(true);
-				//Hide Current
-				JButton button = (JButton)e.getSource();
-			    Window window = SwingUtilities.windowForComponent(button);
-			    window.setVisible(false);
+				// Hide Current
+				JButton button = (JButton) e.getSource();
+				Window window = SwingUtilities.windowForComponent(button);
+				window.setVisible(false);
 			}
 		});
 		button.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
