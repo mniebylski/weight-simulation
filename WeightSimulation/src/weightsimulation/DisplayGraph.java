@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.ValueMarker;
@@ -47,6 +48,11 @@ import javax.swing.JLabel;
 
 public class DisplayGraph {
 
+	// Predefine Data Sets
+	static TimeSeriesCollection ds;
+	static TimeSeries data;
+	static TimeSeries future;
+
 	DisplayGraph() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -55,7 +61,7 @@ public class DisplayGraph {
 				frame.setResizable(false);
 
 				// Set Frame Properties
-				frame.setSize(722,719);
+				frame.setSize(722, 719);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 				// Load Data Set
@@ -98,8 +104,9 @@ public class DisplayGraph {
 				// Domain Customization
 				((DateAxis) xAxis).setDateFormatOverride(new SimpleDateFormat(
 						"MM/dd/yyyy"));
-				xAxis.setAutoTickUnitSelection(false);
+				xAxis.setAutoTickUnitSelection(true);
 				xAxis.setVerticalTickLabels(true);
+
 				// Make Domain Smallest Past Val to Largest Future
 				xAxis.setRange(ds.getXValue(0, 0), ds.getXValue(1, 6));
 
@@ -108,8 +115,8 @@ public class DisplayGraph {
 				XYSplineRenderer rend1 = new XYSplineRenderer();
 
 				plot.setRenderer(rend);
-				rend.setPrecision(5);
-				rend1.setPrecision(5);
+				rend.setPrecision(7);
+				rend1.setPrecision(7);
 
 				// Color Graph
 				plot.getRenderer(0).setSeriesStroke(0, new BasicStroke(2.0f));
@@ -133,12 +140,12 @@ public class DisplayGraph {
 				// Add Chart to Frame
 				frame.getContentPane().add(chartPane);
 				chartPane.setLayout(null);
-				
+
 				JPanel panel = new JPanel();
 				panel.setBounds(0, 0, 10, 10);
 				frame.getContentPane().add(panel);
-				
-				//Buttons 
+
+				// Buttons
 				JButton btnNewButton = new JButton("Back");
 				btnNewButton.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 				btnNewButton.setBounds(16, 623, 88, 72);
@@ -148,34 +155,85 @@ public class DisplayGraph {
 						// Show hub
 						PatientHub hub = new PatientHub();
 						hub.setVisible(true);
-						//Hide Current
-						JButton button = (JButton)e.getSource();
-					    Window window = SwingUtilities.windowForComponent(button);
-					    window.setVisible(false);
+						// Hide Current
+						JButton button = (JButton) e.getSource();
+						Window window = SwingUtilities
+								.windowForComponent(button);
+						window.setVisible(false);
 					}
 				});
-				
+
+				// Title For Range Selection
 				JLabel lblDateRange = new JLabel("Date Range");
 				lblDateRange.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 				lblDateRange.setBounds(312, 593, 132, 43);
 				frame.getContentPane().add(lblDateRange);
-				
+
+				// Set Range to 7 Days
 				JButton btnNewButton_1 = new JButton("7 Days");
+				btnNewButton_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Set New Axis
+						xAxis.setRange(findDomain(7)[0], findDomain(7)[1]);
+
+						// Refresh Panel
+						frame.invalidate();
+						frame.validate();
+						frame.repaint();
+					}
+				});
 				btnNewButton_1.setBounds(128, 635, 88, 51);
 				frame.getContentPane().add(btnNewButton_1);
-				
+
+				// Set Range to 3 Weeks
 				JButton btnWeeks = new JButton("3 Weeks");
+				btnWeeks.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Set New Axis
+						xAxis.setRange(findDomain(21)[0], findDomain(21)[1]);
+
+						// Refresh Panel
+						frame.invalidate();
+						frame.validate();
+						frame.repaint();
+					}
+				});
 				btnWeeks.setBounds(231, 635, 88, 51);
 				frame.getContentPane().add(btnWeeks);
-				
+
+				// Set Range to 6 Months
 				JButton btnMonths = new JButton("6 Months");
+				btnMonths.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Set New Axis
+						xAxis.setRange(findDomain(182)[0], findDomain(182)[1]);
+
+						// Refresh Panel
+						frame.invalidate();
+						frame.validate();
+						frame.repaint();
+					}
+				});
 				btnMonths.setBounds(331, 635, 88, 51);
 				frame.getContentPane().add(btnMonths);
-				
+
+				// Set Range to 1 Year
 				JButton btnYear = new JButton("1 Year");
+				btnYear.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						// Set New Axis
+						xAxis.setRange(findDomain(365)[0], findDomain(365)[1]);
+
+						// Refresh Panel
+						frame.invalidate();
+						frame.validate();
+						frame.repaint();
+					}
+				});
 				btnYear.setBounds(431, 635, 88, 51);
 				frame.getContentPane().add(btnYear);
-				
+
+				// Set A Custom Range
 				JButton btnCustom = new JButton("Custom");
 				btnCustom.setBounds(531, 635, 88, 51);
 				frame.getContentPane().add(btnCustom);
@@ -184,13 +242,27 @@ public class DisplayGraph {
 		});
 	}
 
+	// Make Custom Date Range
+	private static Date[] findDomain(int days) {
+		Date[] domain = new Date[2];
+		long today = System.currentTimeMillis() / 1000;
+		Date start = new Date((today - (days * 86400)) * 1000);
+		Date end = new Date((today + (days * 86400)) * 1000);
+
+		domain[0] = start;
+		domain[1] = end;
+
+		return domain;
+
+	}
+
 	// Generate Points For Graph
 	private static XYDataset createDataset() {
 
 		// Create data sets
-		TimeSeriesCollection ds = new TimeSeriesCollection();
-		TimeSeries data = new TimeSeries("Data Weigh-ins");
-		TimeSeries future = new TimeSeries("Future Predictions");
+		ds = new TimeSeriesCollection();
+		data = new TimeSeries("Data Weigh-ins");
+		future = new TimeSeries("Future Predictions");
 
 		// Create scanner
 		File file = new File("data.txt");
@@ -204,29 +276,29 @@ public class DisplayGraph {
 		// Cycle through text
 		while (sc.hasNextLine()) {
 			if (sc.nextLine() != "") {
-				//Get Date String
+				// Get Date String
 				String dateStr = sc.next();
-				
-				//Splice Month
+
+				// Splice Month
 				int month = Integer.parseInt((dateStr.substring(0,
 						dateStr.indexOf("/"))));
-				
-				//Splice Day
+
+				// Splice Day
 				dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
 						dateStr.length());
 				int day = Integer.parseInt((dateStr.substring(0,
 						dateStr.indexOf("/"))));
-				
-				//Splice Year
+
+				// Splice Year
 				dateStr = dateStr.substring(dateStr.indexOf("/") + 1,
 						dateStr.length());
 				int year = Integer.parseInt(dateStr);
-				
-				//Get Weight
+
+				// Get Weight
 				Double weight = sc.nextDouble();
 				Day myDay = new Day(day, month, year);
-				
-				//Add Data Point
+
+				// Add Data Point
 				data.add(myDay, weight);
 			}
 		}
@@ -242,10 +314,17 @@ public class DisplayGraph {
 		ds.addSeries(data);
 		ds.addSeries(future);
 
-		Date date = new Date((Long) ds.getX(0, 0));
-		DateFormat format = new SimpleDateFormat("dd");
-		format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-		String formatted = format.format(date);
+		/*
+		 * Epoch Date Conversion and Change
+		 * 
+		 * Date date = new Date((Long) ds.getX(0, 0)); Date datePast = new
+		 * Date((Long) ds.getX(0, 0) - 86400000); DateFormat format = new
+		 * SimpleDateFormat("MM/dd/YYYY");
+		 * format.setTimeZone(TimeZone.getTimeZone("Etc/UTC")); String formatted
+		 * = format.format(date); String formattedPast =
+		 * format.format(datePast); System.out.println("Now it's " + formatted +
+		 * " and yesterday it was " + formattedPast);
+		 */
 
 		return ds;
 	}
