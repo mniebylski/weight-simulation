@@ -74,7 +74,7 @@ public class DisplayGraph {
 				XYDataset ds = createDataset();
 
 				// Create an XY Time Series Chart
-				JFreeChart chart = ChartFactory.createTimeSeriesChart("Weight Over Time", "Date (mm/dd/yy)", "Weight (lbs)", ds, false, false, false);
+				JFreeChart chart = ChartFactory.createTimeSeriesChart("Weight Over Time", "Date (M/d/yy)", "Weight (lbs)", ds, false, false, false);
 
 				// Create Horizontal Line (Target Weight)
 				ValueMarker marker = new ValueMarker(140);
@@ -107,7 +107,7 @@ public class DisplayGraph {
 				DateAxis xAxis = (DateAxis) plot.getDomainAxis();
 
 				// Domain Customization
-				((DateAxis) xAxis).setDateFormatOverride(new SimpleDateFormat("MM/dd/yyyy"));
+				((DateAxis) xAxis).setDateFormatOverride(new SimpleDateFormat("M/d/yyyy"));
 				xAxis.setAutoTickUnitSelection(true);
 				xAxis.setVerticalTickLabels(true);
 
@@ -405,7 +405,7 @@ public class DisplayGraph {
 			Double value = entry.getValue();
 
 			DateFormat fmtD = new SimpleDateFormat("dd");
-			DateFormat fmtM = new SimpleDateFormat("MM");
+			DateFormat fmtM = new SimpleDateFormat("M");
 			DateFormat fmtY = new SimpleDateFormat("YYYY");
 
 			String day = fmtD.format(key);
@@ -424,7 +424,7 @@ public class DisplayGraph {
 		 * 
 		 * Date date = new Date((Long) ds.getX(0, 0)); Date datePast = new
 		 * Date((Long) ds.getX(0, 0) - 86400000); DateFormat format = new
-		 * SimpleDateFormat("MM/dd/YYYY");
+		 * SimpleDateFormat("M/d/YYYY");
 		 * format.setTimeZone(TimeZone.getTimeZone("Etc/UTC")); String formatted
 		 * = format.format(date); String formattedPast =
 		 * format.format(datePast); System.out.println("Now it's " + formatted +

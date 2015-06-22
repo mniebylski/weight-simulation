@@ -21,6 +21,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PatientInput extends JFrame implements ActionListener {
 	private JPanel contentPane;
@@ -117,19 +120,12 @@ public class PatientInput extends JFrame implements ActionListener {
 						weight *= 2.2046;
 					}
 
-					try (PrintWriter out = new PrintWriter(new BufferedWriter(
-					// Append Text File
-							new FileWriter("data.txt", true)))) {
-						out.print("\n" + txtEnterMonth.getText() + "/" + txtEnterDay.getText() + "/" + txtEnterYear.getText() + " " + weight);
+					String dateS = (txtEnterMonth.getText() + "/" + txtEnterDay.getText() + "/" + txtEnterYear.getText());
 
-						// Success Dialog
-						JOptionPane.showMessageDialog(contentPane, "Data Successfully Entered", "Success", JOptionPane.DEFAULT_OPTION);
+					JOptionPane.showMessageDialog(contentPane, "Data Successfully Entered", "Success", JOptionPane.DEFAULT_OPTION);
 
-					} catch (IOException ex) {
-						// Throw Error
-						JOptionPane.showMessageDialog(contentPane, "Something went wrong. Please restart the program.", "Error", JOptionPane.ERROR_MESSAGE);
-						ex.printStackTrace();
-					}
+					DataFile data = new DataFile("data.txt");
+					data.put(dateS, weight);
 
 					// Clear Forms
 					txtEnterWeight.setText("");
