@@ -21,9 +21,12 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.jdesktop.swingx.JXDatePicker;
 
 public class PatientInput extends JFrame implements ActionListener {
 	private JPanel contentPane;
@@ -40,7 +43,6 @@ public class PatientInput extends JFrame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	
 
 	public void createPanel() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,54 +54,31 @@ public class PatientInput extends JFrame implements ActionListener {
 
 		JLabel lblWeightLossTracker = new JLabel("Data Input");
 		lblWeightLossTracker.setFont(new Font("Lucida Grande", Font.BOLD, 24));
-		lblWeightLossTracker.setBounds(158, 6, 131, 43);
+		lblWeightLossTracker.setBounds(104, 6, 131, 43);
 		contentPane.add(lblWeightLossTracker);
 
 		// Weight field and label
 		JLabel lblWeight = new JLabel("Weight (lbs): ");
 		lblWeight.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblWeight.setBounds(89, 50, 128, 43);
+		lblWeight.setBounds(26, 47, 128, 43);
 		contentPane.add(lblWeight);
 
-		JLabel lblDay = new JLabel("Day:");
-		lblDay.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblDay.setBounds(89, 105, 128, 43);
-		contentPane.add(lblDay);
-
-		JLabel lblMonth = new JLabel("Month:");
-		lblMonth.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblMonth.setBounds(89, 160, 128, 43);
-		contentPane.add(lblMonth);
-
-		JLabel lblYear = new JLabel("Year:");
-		lblYear.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblYear.setBounds(89, 215, 128, 43);
-		contentPane.add(lblYear);
-
 		txtEnterWeight = new JTextField();
-		txtEnterWeight.setBounds(224, 53, 134, 43);
+		txtEnterWeight.setBounds(166, 50, 147, 43);
 		contentPane.add(txtEnterWeight);
 		txtEnterWeight.setColumns(10);
 
-		txtEnterDay = new JTextField();
-		txtEnterDay.setColumns(10);
-		txtEnterDay.setBounds(224, 108, 134, 43);
-		contentPane.add(txtEnterDay);
+		// Date Picker
+		JXDatePicker datePicker = new JXDatePicker();
+		datePicker.setBounds(165, 102, 148, 43);
+		contentPane.add(datePicker);
 
-		txtEnterMonth = new JTextField();
-		txtEnterMonth.setColumns(10);
-		txtEnterMonth.setBounds(224, 163, 134, 43);
-		contentPane.add(txtEnterMonth);
-
-		txtEnterYear = new JTextField();
-		txtEnterYear.setColumns(10);
-		txtEnterYear.setBounds(224, 218, 134, 43);
-		contentPane.add(txtEnterYear);
-
+		// Submit Weight
 		JButton btnNewButton = new JButton("Submit");
+		btnNewButton.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ((txtEnterWeight.getText().length() >= 2 && txtEnterWeight.getText().length() < 7) && (txtEnterDay.getText().length() <= 2 && txtEnterDay.getText().length() >= 1) && (txtEnterMonth.getText().length() <= 2 && txtEnterMonth.getText().length() >= 1) && (txtEnterYear.getText().length() == 4)) {
+				if ((txtEnterWeight.getText().length() >= 2 && txtEnterWeight.getText().length() < 7) && (datePicker.getDate() != null)) {
 					// Save Data
 
 					// Covert metric to imperial
@@ -109,18 +88,27 @@ public class PatientInput extends JFrame implements ActionListener {
 						weight *= 2.2046;
 					}
 
-					String dateS = (txtEnterMonth.getText() + "/" + txtEnterDay.getText() + "/" + txtEnterYear.getText());
+					// Date Chosen
+					Date dateC = datePicker.getDate();
+
+					// Create Vertical Line (Target Date)
+					// Format Date Data
+					DateFormat fmtD = new SimpleDateFormat("d");
+					DateFormat fmtM = new SimpleDateFormat("M");
+					DateFormat fmtY = new SimpleDateFormat("YYYY");
+
+					// Convert String To Int
+					String day = fmtD.format(dateC);
+					String month = fmtM.format(dateC);
+					String year = fmtY.format(dateC);
 
 					JOptionPane.showMessageDialog(contentPane, "Data Successfully Entered", "Success", JOptionPane.DEFAULT_OPTION);
 
 					DataFile data = new DataFile("data.txt");
-					data.put(dateS, weight);
+					data.put(month + "/" + day + "/" + year, weight);
 
-					// Clear Forms
-					txtEnterWeight.setText("");
-					txtEnterDay.setText("");
-					txtEnterMonth.setText("");
-					txtEnterYear.setText("");
+					// Clear Form
+					datePicker.setDate(null);
 
 				} else {
 					// Throw Error
@@ -128,18 +116,18 @@ public class PatientInput extends JFrame implements ActionListener {
 				}
 			}
 		});
-		btnNewButton.setBounds(224, 286, 134, 47);
+		btnNewButton.setBounds(179, 190, 134, 53);
 		contentPane.add(btnNewButton);
 
 		// Enable Metric Mode
 		JCheckBox chckbxMetricUnits = new JCheckBox("Metric Units");
-		chckbxMetricUnits.setBounds(84, 296, 128, 23);
+		chckbxMetricUnits.setBounds(44, 155, 108, 23);
 		contentPane.add(chckbxMetricUnits);
 
 		// Back Button
 		JButton btnNewButton_1 = new JButton("Back");
 		btnNewButton_1.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		btnNewButton_1.setBounds(363, 286, 81, 47);
+		btnNewButton_1.setBounds(26, 190, 134, 53);
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Show hub
@@ -152,6 +140,11 @@ public class PatientInput extends JFrame implements ActionListener {
 			}
 		});
 		contentPane.add(btnNewButton_1);
+		
+		JLabel lblDate = new JLabel("Date:");
+		lblDate.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+		lblDate.setBounds(93, 102, 50, 43);
+		contentPane.add(lblDate);
 
 		chckbxMetricUnits.addActionListener(new ActionListener() {
 
@@ -172,7 +165,7 @@ public class PatientInput extends JFrame implements ActionListener {
 
 	public PatientInput() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 362);
+		setBounds(100, 100, 336, 284);
 		createPanel();
 	}
 
@@ -180,5 +173,4 @@ public class PatientInput extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 	}
-
 }
