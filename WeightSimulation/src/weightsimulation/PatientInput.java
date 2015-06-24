@@ -13,16 +13,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Window;
 import java.awt.event.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -30,14 +23,7 @@ import org.jdesktop.swingx.JXDatePicker;
 
 public class PatientInput extends JFrame implements ActionListener {
 	private JPanel contentPane;
-	private DisplayGraph graph;
-	private int currentWeight;
-	private int currentDate;
 	private JTextField txtEnterWeight;
-	private JTextField txtEnterDay;
-	private JTextField txtEnterMonth;
-	private JTextField txtEnterYear;
-
 	boolean metric = false;
 
 	/**
@@ -140,7 +126,7 @@ public class PatientInput extends JFrame implements ActionListener {
 			}
 		});
 		contentPane.add(btnNewButton_1);
-		
+
 		JLabel lblDate = new JLabel("Date:");
 		lblDate.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		lblDate.setBounds(93, 102, 50, 43);

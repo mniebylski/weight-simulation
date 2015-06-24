@@ -11,7 +11,7 @@ public class PredictWeight {
 	}
 
 	// Generate map of data points
-	public TreeMap generatePoints(int days) {
+	public TreeMap<Date, Double> generatePoints(int days) {
 		TreeMap<Date, Double> tm = new TreeMap<Date, Double>();
 
 		// Generate First Time

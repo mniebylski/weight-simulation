@@ -1,21 +1,18 @@
 package weightsimulation;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.TreeMap;
-
-import javax.swing.JOptionPane;
-
-import org.jfree.data.time.Hour;
 
 public class DataFile {
 	// Variables
@@ -25,7 +22,7 @@ public class DataFile {
 
 	// Format
 	SimpleDateFormat formatter = new SimpleDateFormat("M/d/YYYY");
-	
+
 	// Constructor
 	DataFile(String path) {
 		this.path = path;
@@ -51,7 +48,7 @@ public class DataFile {
 		return point;
 	}
 
-	public TreeMap getMap() {
+	public TreeMap<Date, Double> getMap() {
 		return dataMap;
 	}
 
@@ -76,8 +73,36 @@ public class DataFile {
 		}
 	}
 
-	public void remove(Date date) {
-		dataMap.remove(date);
+	public void remove(String date) throws IOException, ParseException {
+		// Make a date
+		SimpleDateFormat formatter = new SimpleDateFormat("M/d/yyyy");
+		Date dateFmt = formatter.parse(date);
+		
+		// Remove from data map
+		dataMap.remove(dateFmt);
+
+		// Remove from file
+		// Create temp text
+		File file = new File(path);
+		File fileTemp = new File("temp.txt");
+
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileTemp));
+
+		String currentLine;
+
+		while ((currentLine = reader.readLine()) != null) {
+
+			if (currentLine.contains(date))
+				continue;
+
+			writer.write(currentLine);
+		}
+
+		writer.close();
+		boolean successful = fileTemp.renameTo(file);
+		System.out.println(successful);
+
 	}
 
 	public void loadData() {
@@ -120,8 +145,8 @@ public class DataFile {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				
-				//System.out.println(date+" "+weight );
+
+				// System.out.println(date+" "+weight );
 
 				// Add To Tree Map
 				dataMap.put(utilDate, weight);

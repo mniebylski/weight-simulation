@@ -1,7 +1,5 @@
 package weightsimulation;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Window;
 
 import javax.swing.JFrame;
@@ -24,21 +22,17 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Map.Entry;
-
-import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.JXTable;
 
 import javax.swing.JSpinner;
 
 import org.jdesktop.swingx.JXDatePicker;
-import org.jfree.data.time.Day;
-import org.jfree.data.time.RegularTimePeriod;
 
 public class PatientGoals extends JFrame {
 
@@ -121,6 +115,7 @@ public class PatientGoals extends JFrame {
 		table = new JTable(model);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(table);
+		table.getTableHeader().setResizingAllowed(false);
 
 		// Table Selection
 		ListSelectionModel cellSelectionModel = table.getSelectionModel();
@@ -137,11 +132,10 @@ public class PatientGoals extends JFrame {
 			// Get Map Data
 			Date key = entry.getKey();
 			Double value = entry.getValue();
-			
+
 			// Add Goal
 			model.addRow(new Object[] { value, format.format(key), "4", daysUntil(key) });
 
-			
 		}
 
 		// Remove Button
@@ -152,8 +146,21 @@ public class PatientGoals extends JFrame {
 				if (table.getSelectedRow() != -1) {
 					// Remove Goal
 					int delRow = (int) table.getSelectedRow();
-					System.out.println(delRow);
+
+					String toDate = (String) model.getValueAt(delRow, 1);
+					System.out.println(toDate);
+					try {
+						dateGoals.remove(toDate);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 					((DefaultTableModel) table.getModel()).removeRow(delRow);
+
 				} else {
 					// Error Message
 					JOptionPane.showMessageDialog(contentPane, "Please select a row to delete.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -241,9 +248,6 @@ public class PatientGoals extends JFrame {
 					if (selectionMode == 0) {
 						// Date Chosen
 						Date dateC = datePicker.getDate();
-
-						// Weight Chose
-						int weightC = (int) spinner.getValue();
 
 						// Add Goal
 						model.addRow(new Object[] { spinner.getValue(), format.format(dateC), "4", daysUntil(dateC) });

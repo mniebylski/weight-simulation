@@ -5,14 +5,12 @@ package weightsimulation;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
-import java.awt.Stroke;
 import java.awt.Window;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeMap;
 import java.util.Map.Entry;
-import java.util.TimeZone;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -22,13 +20,10 @@ import org.jdesktop.swingx.JXDatePicker;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
@@ -38,11 +33,6 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
 import java.util.*;
-import java.io.*;
-
-import javax.swing.JPanel;
-
-import java.awt.BorderLayout;
 
 import javax.swing.JButton;
 
