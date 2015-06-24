@@ -23,6 +23,9 @@ public class DataFile {
 
 	TreeMap<Date, Double> dataMap = new TreeMap<Date, Double>();
 
+	// Format
+	SimpleDateFormat formatter = new SimpleDateFormat("M/d/YYYY");
+	
 	// Constructor
 	DataFile(String path) {
 		this.path = path;
@@ -37,7 +40,13 @@ public class DataFile {
 	}
 
 	public double getPoint(String date) {
-		double point = dataMap.get(date);
+		double point = 0;
+		try {
+			point = dataMap.get(formatter.parse(date));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return point;
 	}
@@ -52,8 +61,6 @@ public class DataFile {
 			out.print("\n" + date + " " + weight);
 
 			String dateS = date;
-
-			SimpleDateFormat formatter = new SimpleDateFormat("M/d/YYYY");
 
 			Date dateF;
 			try {
@@ -85,7 +92,7 @@ public class DataFile {
 
 		// Cycle through text
 		while (sc.hasNextLine()) {
-			if (sc.nextLine() != "") {
+			if (sc.nextLine() != "" || sc.nextLine() != null) {
 				// Get Date String
 				String dateStr = sc.next();
 
@@ -113,6 +120,8 @@ public class DataFile {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
+				
+				//System.out.println(date+" "+weight );
 
 				// Add To Tree Map
 				dataMap.put(utilDate, weight);

@@ -40,18 +40,7 @@ public class PatientInput extends JFrame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PatientInput frame = new PatientInput();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	public void createPanel() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

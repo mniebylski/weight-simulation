@@ -10,6 +10,7 @@ import java.awt.Window;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
@@ -31,6 +32,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
+import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
@@ -58,6 +60,9 @@ public class DisplayGraph {
 	static TimeSeries data;
 	static TimeSeries future;
 
+	static// Patient
+	Patient p1 = new Patient();
+
 	DisplayGraph() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -76,32 +81,79 @@ public class DisplayGraph {
 				// Create an XY Time Series Chart
 				JFreeChart chart = ChartFactory.createTimeSeriesChart("Weight Over Time", "Date (M/d/yy)", "Weight (lbs)", ds, false, false, false);
 
-				// Create Horizontal Line (Target Weight)
-				ValueMarker marker = new ValueMarker(140);
-				marker.setPaint(new Color(0, 219, 29));
-
-				float[] dashed = new float[] { 10.0f, 10.0f };
-				BasicStroke stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 10.0f, dashed, 10.0f);
-
-				marker.setStroke(stroke);
-
-				// marker.setLabel("Target Weight: "+140);
-
+				// Make Goal Data Object
+				DataFile goalData = new DataFile("goals.txt");
+				TreeMap<Date, Double> goalMap = goalData.getMap();
+				
 				// Create XYPlot Object
 				XYPlot plot = (XYPlot) chart.getPlot();
-				plot.addRangeMarker(marker);
+				
+				// Create Dashed Strokes
+				float[] dashed = new float[] { 10.0f, 10.0f };
+				BasicStroke stroke = new BasicStroke(2, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL, 10.0f, dashed, 10.0f);
+
+				// Get Smallest Goal
+				double lowestGoal = -1;
+				
+				// Create Goal Lines
+				for (Entry<Date, Double> entry : goalMap.entrySet()) {
+					
+					// Get Map Data
+					Date key = entry.getKey();
+					Double value = entry.getValue();
+					
+					// Set Lowest Goal
+					if(lowestGoal==-1){
+						lowestGoal = value;
+					}else if(lowestGoal>value){
+						lowestGoal = value;
+					}
+					
+					
+					// Create Horizontal Line (Target Weight)
+					ValueMarker marker = new ValueMarker(value);
+					marker.setPaint(new Color(0, 219, 29));
+
+					marker.setStroke(stroke);
+					plot.addRangeMarker(marker);
+					
+					// Create Vertical Line (Target Date)
+					// Format Date Data
+					DateFormat fmtD = new SimpleDateFormat("d");
+					DateFormat fmtM = new SimpleDateFormat("M");
+					DateFormat fmtY = new SimpleDateFormat("YYYY");
+
+					// Convert String To Int
+					String day = fmtD.format(key);
+					String month = fmtM.format(key);
+					String year = fmtY.format(key);
+
+					// Draw Line
+					RegularTimePeriod graphTimePeriod = new Day( Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year));
+					ValueMarker vm = new ValueMarker(graphTimePeriod.getMiddleMillisecond());  
+					vm.setPaint(new Color(0, 219, 29));
+
+					vm.setStroke(stroke);
+			        plot.addDomainMarker(vm);
+			        
+			        // Add Labels
+			        vm.setLabel("Target Weight: "+value);
+				}
 
 				// Background
 				plot.setBackgroundPaint(new GradientPaint(0, 0, new Color(81, 114, 153), 200, 200, new Color(125, 185, 232), false));
 				plot.setBackgroundImageAlpha(0.5f);
-
+				
 				// Set Custom Range
 				ValueAxis yAxis = plot.getRangeAxis();
-				// yAxis.setRange(135.0, 155.0);
-				/*
-				 * Todo: find largest weight (both datasets) and the lowest
-				 * weight (or goal)
-				 */
+				if (((TimeSeriesCollection) ds).getRangeBounds(true).getLowerBound() < lowestGoal || lowestGoal == -1) {
+					// Make Range From Smallest Weight To Largest Weight
+					yAxis.setRange(((TimeSeriesCollection) ds).getRangeBounds(true).getLowerBound() - .5, ((TimeSeriesCollection) ds).getRangeBounds(true).getUpperBound() + .5);
+				} else {
+					System.out.println("Using lowestGoal: "+lowestGoal);
+					// Make Range From Lowest Goal To Largest Weight
+					yAxis.setRange(lowestGoal - .5, ((TimeSeriesCollection) ds).getRangeBounds(true).getUpperBound() + .5);
+				}
 
 				// Set Domain
 				DateAxis xAxis = (DateAxis) plot.getDomainAxis();
@@ -349,49 +401,40 @@ public class DisplayGraph {
 		data = new TimeSeries("Data Weigh-ins");
 		future = new TimeSeries("Future Predictions");
 
-		// Create scanner
-		File file = new File("data.txt");
-		Scanner sc = null;
-		try {
-			sc = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		// Date Reader
+		DataFile fileR = new DataFile("data.txt");
 
-		// Cycle through text
-		while (sc.hasNextLine()) {
-			if (sc.nextLine() != "") {
-				// Get Date String
-				String dateStr = sc.next();
+		// Tree Map
+		TreeMap<Date, Double> dataMap = fileR.getMap();
 
-				// Splice Month
-				int month = Integer.parseInt((dateStr.substring(0, dateStr.indexOf("/"))));
+		// Iterate Through Map
+		for (Map.Entry<Date, Double> entry : dataMap.entrySet()) {
+			// Get Map Data
+			Date key = entry.getKey();
+			Double value = entry.getValue();
 
-				// Splice Day
-				dateStr = dateStr.substring(dateStr.indexOf("/") + 1, dateStr.length());
-				int day = Integer.parseInt((dateStr.substring(0, dateStr.indexOf("/"))));
+			// Format Date Data
+			DateFormat fmtD = new SimpleDateFormat("d");
+			DateFormat fmtM = new SimpleDateFormat("M");
+			DateFormat fmtY = new SimpleDateFormat("YYYY");
 
-				// Splice Year
-				dateStr = dateStr.substring(dateStr.indexOf("/") + 1, dateStr.length());
-				int year = Integer.parseInt(dateStr);
+			// Convert String To Int
+			String day = fmtD.format(key);
+			String month = fmtM.format(key);
+			String year = fmtY.format(key);
 
-				// Get Weight
-				Double weight = sc.nextDouble();
-				Hour myDay = new Hour(0, day, month, year);
+			// Add Data Point
+			data.add(new Hour(0, Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year)), value);
 
-				// Add Data Point
-				data.add(myDay, weight);
-
-				// Set Last Point
-				monthL = month;
-				dayL = day;
-				yearL = year;
-				weightL = weight;
-			}
+			// Set Last Point
+			monthL = Integer.parseInt(month);
+			dayL = Integer.parseInt(day);
+			yearL = Integer.parseInt(year);
+			weightL = value;
 		}
 
 		// Create Predictor
-		PredictWeight prediction = new PredictWeight("data.txt");
+		PredictWeight prediction = new PredictWeight(p1, "data.txt");
 
 		// Get Map Of Data
 		TreeMap<Date, Double> futureSet = prediction.generatePoints(7);
@@ -401,21 +444,26 @@ public class DisplayGraph {
 
 		// Cycle Through And Add Data
 		for (Entry<Date, Double> entry : futureSet.entrySet()) {
+			// Get Map Data
 			Date key = entry.getKey();
 			Double value = entry.getValue();
 
-			DateFormat fmtD = new SimpleDateFormat("dd");
+			// Format Date Data
+			DateFormat fmtD = new SimpleDateFormat("d");
 			DateFormat fmtM = new SimpleDateFormat("M");
 			DateFormat fmtY = new SimpleDateFormat("YYYY");
 
+			// Convert String to Int
 			String day = fmtD.format(key);
 			String month = fmtM.format(key);
 			String year = fmtY.format(key);
 
+			// Add New Data Point
 			future.add(new Hour(0, Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year)), value);
 
 		}
 
+		// Combine Data Sets
 		ds.addSeries(data);
 		ds.addSeries(future);
 

@@ -6,8 +6,8 @@ import java.util.TreeMap;
 public class PredictWeight {
 	String path;
 
-	PredictWeight(String fileLocation) {
-		path = fileLocation;
+	PredictWeight(Patient patient, String path) {
+		this.path = path;
 	}
 
 	// Generate map of data points

@@ -26,6 +26,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.JXTable;
@@ -33,6 +37,8 @@ import org.jdesktop.swingx.JXTable;
 import javax.swing.JSpinner;
 
 import org.jdesktop.swingx.JXDatePicker;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.RegularTimePeriod;
 
 public class PatientGoals extends JFrame {
 
@@ -42,22 +48,16 @@ public class PatientGoals extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PatientGoals frame = new PatientGoals();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	// Variables
 	// Selection Mode: 0=Add,1=Edit
-	int selectionMode = 0;
+	int selectionMode = -1;
+
+	// Date Writing
+	DataFile dateGoals = new DataFile("goals.txt");
+
+	// Tree Map
+	TreeMap<Date, Double> dataMap = dateGoals.getMap();
 
 	// Format
 	DateFormat format = new SimpleDateFormat("M/d/YYYY");
@@ -103,7 +103,7 @@ public class PatientGoals extends JFrame {
 		String columnNames[] = { "Weight", "Date", "Lbs Left", "Days Left" };
 
 		// Create some data
-		String dataValues[][] = { { "12", "234", "67", "12" }, { "-123", "43", "853", "12" }, { "93", "89.2", "109", "12" }, { "279", "9033", "3092", "12" } };
+		String dataValues[][] = {};
 
 		// Create scroll pane for table
 		JScrollPane scrollPane = new JScrollPane();
@@ -123,7 +123,6 @@ public class PatientGoals extends JFrame {
 		scrollPane.setViewportView(table);
 
 		// Table Selection
-
 		ListSelectionModel cellSelectionModel = table.getSelectionModel();
 		cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -131,6 +130,19 @@ public class PatientGoals extends JFrame {
 			public void valueChanged(ListSelectionEvent e) {
 			}
 		});
+
+		// Populate Table
+		for (Map.Entry<Date, Double> entry : dataMap.entrySet()) {
+
+			// Get Map Data
+			Date key = entry.getKey();
+			Double value = entry.getValue();
+			
+			// Add Goal
+			model.addRow(new Object[] { value, format.format(key), "4", daysUntil(key) });
+
+			
+		}
 
 		// Remove Button
 		JButton btnRemove = new JButton("Remove");
@@ -208,6 +220,7 @@ public class PatientGoals extends JFrame {
 		spinner.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		spinner.setBounds(182, 247, 146, 40);
 		contentPane.add(spinner);
+		spinner.setValue(1.0);
 
 		// Target Date Selector
 		JLabel lblTargetDate = new JLabel("Target Date");
@@ -226,8 +239,28 @@ public class PatientGoals extends JFrame {
 				// Check date and weight
 				if ((int) spinner.getValue() > 1 && (long) datePicker.getDate().getTime() > System.currentTimeMillis()) {
 					if (selectionMode == 0) {
+						// Date Chosen
+						Date dateC = datePicker.getDate();
+
+						// Weight Chose
+						int weightC = (int) spinner.getValue();
+
 						// Add Goal
-						model.addRow(new Object[] { spinner.getValue(), format.format(datePicker.getDate()), "4", "4" });
+						model.addRow(new Object[] { spinner.getValue(), format.format(dateC), "4", daysUntil(dateC) });
+
+						// Create Vertical Line (Target Date)
+						// Format Date Data
+						DateFormat fmtD = new SimpleDateFormat("d");
+						DateFormat fmtM = new SimpleDateFormat("M");
+						DateFormat fmtY = new SimpleDateFormat("YYYY");
+
+						// Convert String To Int
+						String day = fmtD.format(dateC);
+						String month = fmtM.format(dateC);
+						String year = fmtY.format(dateC);
+
+						dateGoals.put(month + "/" + day + "/" + year, (double) (int) spinner.getValue());
+
 					} else if (selectionMode == 1) {
 						// Edit Goal
 
@@ -251,5 +284,32 @@ public class PatientGoals extends JFrame {
 		// Disable Reordering
 		table.getTableHeader().setReorderingAllowed(false);
 
+	}
+
+	public int daysUntil(Date date) {
+		int daysUntil = 0;
+
+		// Current Date
+		Date dateC = new Date();
+
+		// Format Date Data
+		DateFormat fmtD = new SimpleDateFormat("d");
+		DateFormat fmtM = new SimpleDateFormat("M");
+		DateFormat fmtY = new SimpleDateFormat("YYYY");
+
+		// Convert String To Int- Goal Date
+		String day = fmtD.format(date);
+		String month = fmtM.format(date);
+		String year = fmtY.format(date);
+
+		// Covert String To Int- Current Date
+		String dayT = fmtD.format(dateC);
+		String monthT = fmtM.format(dateC);
+		String yearT = fmtY.format(dateC);
+
+		// Find Number Of Days
+		daysUntil = (int) ((Integer.parseInt(day) + (Integer.parseInt(month) * 30.5) + (Integer.parseInt(year) * 365)) - (Integer.parseInt(dayT) + (Integer.parseInt(monthT) * 30.5) + (Integer.parseInt(yearT) * 365)));
+
+		return daysUntil;
 	}
 }
