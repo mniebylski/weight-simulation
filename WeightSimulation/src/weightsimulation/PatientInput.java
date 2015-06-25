@@ -145,7 +145,7 @@ public class PatientInput extends JFrame implements ActionListener {
 					metric = false;
 				}
 			}
-		});
+		});//test
 
 	}
 
